@@ -129,7 +129,49 @@
 <?php if ($this->bEditEnable or $this->bAddEnable or $this->bDeleteEnable): ?>
 			$("#<?php echo $this->idTable ?>").navGrid("#pager<?php echo $this->idTable ?>",
 			{ edit: <?php echo $this->bEditEnable ?>, add: <?php echo $this->bAddEnable ?>, del: <?php echo $this->bDeleteEnable ?>, view: <?php echo $this->bShowEnable ?>, align: "left", search:false},
-			{ closeAfterEdit: true }
+			//popup edit
+			{
+			<?php if ($this->sPopupEdit): ?>
+					template:<?php echo json_encode($this->sPopupEdit) ?>,
+			<?php endif; ?>
+				closeAfterEdit: true,
+					afterSubmit : function(data, postdata, oper) {
+					var response = data.responseJSON;
+					if (response && response.hasOwnProperty("error")) {
+					if (response.error.length) {
+					return [false, response.error ];
+					}
+					}
+					return [true, "", ""];
+					},
+					errorTextFormat: function (data) {
+					return 'Error: ' + data.responseText;
+					}
+				},
+				//popup add
+				{
+			<?php if ($this->sPopupAdd): ?>
+					template: <?php echo json_encode($this->sPopupAdd) ?>,
+			<?php endif; ?>
+				afterSubmit : function(data, postdata, oper) {
+				var response = data.responseJSON;
+				if (response && response.hasOwnProperty("error")) {
+				if (response.error.length) {
+				return [false, response.error ];
+				}
+				}
+				return [true, "", ""];
+				},
+					errorTextFormat: function (data) {
+					return 'Error: ' + data.responseText;
+					}
+				},
+				//popup delete
+				{
+				errorTextFormat: function (data) {
+				return 'Error: ' + data.responseText;
+				}
+				}
 			);
 <?php endif; ?>
 
