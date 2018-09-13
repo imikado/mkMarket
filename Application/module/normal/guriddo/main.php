@@ -219,6 +219,7 @@ class module_jqGridJson {
 	private $tFilter = null;
 	private $tSortAllowed = array('asc', 'desc');
 	private $tSortFieldAllowed = array();
+	private $tFilterFieldAllowed = array();
 
 	public function __construct() {
 		$this->tColumn = array();
@@ -238,6 +239,11 @@ class module_jqGridJson {
 	public function setSortFieldAllowed($tSortFieldAllowed) {
 		$this->tSortFieldAllowed = $tSortFieldAllowed;
 	}
+	
+	public function setFilterFieldAllowed($tFilterFieldAllowed) {
+		$this->tFilterFieldAllowed = $tFilterFieldAllowed;
+	}
+	
 
 	public function setTotal($iTotal) {
 		$this->iTotal = $iTotal;
@@ -314,6 +320,13 @@ class module_jqGridJson {
 	}
 
 	public function getListFilter() {
+		
+		foreach(array_keys($this->tFilter) as $sField){
+			if(false==in_array($sField,$this->tFilterFieldAllowed) ){
+				throw new Exception('Field not allowed in filter');
+			}
+		}
+	
 		return $this->tFilter;
 	}
 
